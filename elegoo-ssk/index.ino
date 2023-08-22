@@ -1,6 +1,6 @@
 /*
   Lesson 5 - Digital Input
-  Notes - I would call this my first C program. It's a simple program for
+  I would call this my first C program. It's a simple program for
   an arduino. with an LED and two btn inputs. Press btn A for one effect,
   press btn B for a different effect.
  */
@@ -45,7 +45,7 @@ void loop()
 
 /*
 Lesson 7
-Notes - I combined the lesson on buttons with the lesson on the passive buzzer.
+I combined the lesson on buttons with the lesson on the passive buzzer.
 the result is a 4 note keyboard. The code is simple, but works for 4 static btns
 Would be intersting to see how dynamic I can get with 4 btns
 */
@@ -93,7 +93,7 @@ void loop() {
     tone(buzzerPin, melody[3], duration);
     digitalWrite(ledPin, LOW);
   }
-    else if (digitalRead(buttonDpin) == LOW)
+  else if (digitalRead(buttonDpin) == LOW)
   {
     digitalWrite(ledPin, HIGH);
     tone(buzzerPin, melody[4], duration);
@@ -103,3 +103,55 @@ void loop() {
     digitalWrite(ledPin, LOW);
   }
 }
+
+/*
+Lesson 8+9
+This is a simple script that combines lessons 8 and 9 to make a tilt-switch
+controlled servo. I set up a red LED to be lit when the tilt swtich is upright,
+and the built in led to be lit when the switch is off/down. Not sure what to do
+with the servo yet, but it rotates one direction when the switch is on, and the
+other way when the switch is off.
+*/
+#include <Servo.h>
+
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+int pos = 0;    // variable to store the servo position
+
+const int ledPin = 8;//the led attach to
+
+void setup()
+{
+  pinMode(LED_BUILTIN, OUTPUT);;//initialize the ledPin as an output
+  pinMode(ledPin, OUTPUT);;//initialize the ledPin as an output
+  pinMode(2,INPUT);
+  digitalWrite(2, HIGH);
+  Serial.begin(9600);
+  myservo.attach(9);
+}
+
+void loop()
+{
+  int digitalVal = digitalRead(2);
+  if(HIGH == digitalVal)
+  {
+    digitalWrite(LED_BUILTIN,HIGH);//turn builtin led on
+    digitalWrite(ledPin,LOW);//turn the led off
+    for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+                                        // in steps of 1 degree
+      myservo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  }
+  else
+  {
+    digitalWrite(LED_BUILTIN,LOW);//turn builtin led off
+    digitalWrite(ledPin,HIGH);//turn the led on
+    for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+      myservo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(15);                       // waits 15ms for the servo to reach the position
+    }
+  }
+}
+/**********************************************/
